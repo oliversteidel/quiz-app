@@ -1,0 +1,67 @@
+$lightOrange: #E69144;
+$darkOrange: #E76841;
+$darkGray: #3D3D3D;
+$green: #6BB616;
+$red: #E31C23;
+
+$orangeGradient: linear-gradient(45deg, $lightOrange, $darkOrange);
+
+
+
+$medium: 31.25rem;
+$large: 62.5rem;
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: 'Londrina Solid', cursive;
+    overflow-x: hidden;
+}
+
+a,
+a:visited,
+a:focus {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+
+// mixins
+
+@mixin breakpoint-up($size) {
+    @media only screen and (min-width: $size) {
+        @content;
+    }
+}
+
+ 
+
+// helper classes
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.ai-c {
+    align-items: center;
+}
+
+.jc-c {
+    justify-content: center;
+}
+
+.jc-sb {
+    justify-content: space-between;
+}
