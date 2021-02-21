@@ -2,17 +2,22 @@
   <div id="app">
     <h1 class="title">Do you know?</h1>
     <div class="container flex-col ai-c">
-      <header class="header">
+      <header class="header flex jc-sb">
+        <ScoreDisplay
+        v-bind:playerScore="playerScore" />
+        <ProgressDisplay 
+        v-bind:playerProgress="playerProgress" />
         <OptionsBtn />
       </header>
       <SelectDifficulty
-      v-bind:diffOptions="diffOptions"
-      v-on:send-difficulty="setDifficultyString"
-       />
-       <SelectCategory
-       v-bind:categoryOptions="categoryOptions"
-       v-on:send-category="setCategoryString" />
-       
+        v-bind:diffOptions="diffOptions"
+        v-on:send-difficulty="setDifficultyString"
+      />
+      <SelectCategory
+        v-bind:categoryOptions="categoryOptions"
+        v-on:send-category="setCategoryString"
+      />
+      <StartBtn />
     </div>
   </div>
 </template>
@@ -21,13 +26,19 @@
 import OptionsBtn from "./components/OptionsBtn";
 import SelectDifficulty from "./components/SelectDifficulty";
 import SelectCategory from "./components/SelectCategory";
+import StartBtn from "./components/StartBtn";
+import ScoreDisplay from "./components/ScoreDisplay";
+import ProgressDisplay from "./components/ProgressDisplay";
 
 export default {
   name: "App",
   components: {
     OptionsBtn,
     SelectDifficulty,
-    SelectCategory
+    SelectCategory,
+    StartBtn,
+    ScoreDisplay,
+    ProgressDisplay
   },
   data() {
     return {
@@ -38,17 +49,19 @@ export default {
         { text: "hard", value: "&difficulty=hard" },
       ],
       categoryOptions: [
-        {text: "general knowlege", value: "&category=9"},
-        {text: "entertainment: film", value: "&category=11"}
+        { text: "general knowlege", value: "&category=9" },
+        { text: "entertainment: film", value: "&category=11" },
       ],
       difficultyString: "&difficulty=easy",
       categoryString: "&category=9",
+      playerScore: 0,
+      playerProgress: 0,
     };
   },
   computed: {
     api_url: function () {
-      return `https://opentdb.com/api.php?amount=10${this.categoryString}${this.difficultyString}`
-    }
+      return `https://opentdb.com/api.php?amount=10${this.categoryString}${this.difficultyString}`;
+    },
   },
   methods: {
     setDifficultyString(value) {
@@ -56,9 +69,8 @@ export default {
     },
     setCategoryString(value) {
       this.categoryString = value;
-    }
-  }
-  
+    },
+  },
 };
 </script>
 
@@ -88,6 +100,7 @@ export default {
 
     .header {
       margin-bottom: 5rem;
+      width: 100%;
     }
   }
 }

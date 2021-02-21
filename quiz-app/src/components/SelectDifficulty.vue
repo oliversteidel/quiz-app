@@ -67,21 +67,14 @@ export default {
 }
 
 .wrapper--difficulty:not(.no-hover):hover .label--difficulty {
-  animation: moveup 1.5s cubic-bezier(0.52, -0.68, 0.18, 1.51) forwards;
+  animation: moveup 0.75s cubic-bezier(0.52, -0.68, 0.18, 1.51) forwards;
   color: $darkGray;
 }
 
 @keyframes moveup {
   0% {
     transform: translate(1rem, 3.5rem);
-  }
-  25% {
-    transform: rotate(3deg);
-  }
-
-  75% {
-    transform: rotate(0);
-  }
+  }  
   100% {
     transform: translate(0);
   }
@@ -116,6 +109,7 @@ select {
   font-size: 1.5625rem;
   font-weight: 300;
   color: $lightOrange;
+  box-shadow: $shadow;
 
   option {
     border: none;

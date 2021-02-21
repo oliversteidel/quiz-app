@@ -19,6 +19,7 @@ export default {
   border-radius: 0.625rem;
   background: $darkGray;
   color: $lightOrange;
+  box-shadow: $shadow;
 
   img {
     width: 50%;
