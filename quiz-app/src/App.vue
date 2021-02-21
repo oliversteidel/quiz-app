@@ -82,8 +82,13 @@ export default {
   .container {
     width: 100%;
     max-width: 33.75rem;
+    padding: 2rem;
     border-radius: 0.625rem;
     background: $orangeGradient;
+
+    .header {
+      margin-bottom: 5rem;
+    }
   }
 }
 </style>
