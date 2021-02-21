@@ -5,22 +5,29 @@
       <header class="header">
         <OptionsBtn />
       </header>
-      <StartDisplay 
+      <SelectDifficulty
       v-bind:diffOptions="diffOptions"
-      v-on:diff="setDifficulty" />
+      v-on:send-difficulty="setDifficultyString"
+       />
+       <SelectCategory
+       v-bind:categoryOptions="categoryOptions"
+       v-on:send-category="setCategoryString" />
+       
     </div>
   </div>
 </template>
 
 <script>
 import OptionsBtn from "./components/OptionsBtn";
-import StartDisplay from "./components/StartDisplay";
+import SelectDifficulty from "./components/SelectDifficulty";
+import SelectCategory from "./components/SelectCategory";
 
 export default {
   name: "App",
   components: {
     OptionsBtn,
-    StartDisplay,
+    SelectDifficulty,
+    SelectCategory
   },
   data() {
     return {
@@ -30,14 +37,28 @@ export default {
         { text: "medium", value: "&difficulty=medium" },
         { text: "hard", value: "&difficulty=hard" },
       ],
-      difficultyString: "",
+      categoryOptions: [
+        {text: "general knowlege", value: "&category=9"},
+        {text: "entertainment: film", value: "&category=11"}
+      ],
+      difficultyString: "&difficulty=easy",
+      categoryString: "&category=9",
     };
   },
+  computed: {
+    api_url: function () {
+      return `https://opentdb.com/api.php?amount=10${this.categoryString}${this.difficultyString}`
+    }
+  },
   methods: {
-    setDifficulty(value) {
+    setDifficultyString(value) {
       this.difficultyString = value;
     },
-  },
+    setCategoryString(value) {
+      this.categoryString = value;
+    }
+  }
+  
 };
 </script>
 

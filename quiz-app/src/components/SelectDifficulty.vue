@@ -1,8 +1,8 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper flex-col">
     <label for="select-difficulty">select difficulty</label>
 
-    <select id="select-difficulty" v-model="difficulty" @change="sendDifficulty">
+    <select id="select-difficulty" v-model="difficulty" @change="$emit('send-difficulty', difficulty)">
       <option v-for="option in diffOptions" :key="option.value" v-bind:value="option.value" >
           {{option.text}}
       </option>
@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     sendDifficulty() {
-      this.$emit('diff', this.difficulty);
+      return this.difficulty;
     }    
   } 
 }
