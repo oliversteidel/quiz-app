@@ -2,12 +2,21 @@
   <div id="app">
     <h1 class="title">Do you know?</h1>
     <div class="container flex-col ai-c">
-      <header class="header flex jc-sb">
+      <header class="header flex"
+      v-bind:class="[ showOptions ? 'jc-fe' : 'jc-sb' ]">
+        <transition name="fade">
         <ScoreDisplay
-        v-bind:playerScore="playerScore" />
+        v-bind:playerScore="playerScore"
+        v-if="!showOptions" />
+        </transition>
+        <transition name="fade">
         <ProgressDisplay 
-        v-bind:playerProgress="playerProgress" />
-        <OptionsBtn />
+        v-bind:playerProgress="playerProgress"
+        v-if="!showOptions" />
+        </transition>
+        <OptionsBtn
+        v-on:toggle-options="toggleOptions"
+        v-bind:showOptions="showOptions" />
       </header>
       <SelectDifficulty
         v-bind:diffOptions="diffOptions"
@@ -70,6 +79,9 @@ export default {
     setCategoryString(value) {
       this.categoryString = value;
     },
+    toggleOptions() {
+      this.showOptions = !this.showOptions;
+    }
   },
 };
 </script>
@@ -97,11 +109,21 @@ export default {
     padding: 2rem;
     border-radius: 0.625rem;
     background: $orangeGradient;
+    overflow: hidden;
 
     .header {
       margin-bottom: 5rem;
       width: 100%;
+      //overflow-x: hidden;
     }
   }
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: transform .5s ease-out;
+}
+
+.fade-enter, .fade-leave-to {
+  transform: translate(-300%, 0);
 }
 </style>
