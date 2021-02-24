@@ -2,31 +2,45 @@
   <div id="app">
     <h1 class="title">Do you know?</h1>
     <div class="container flex-col ai-c">
-      <header class="header flex"
-      v-bind:class="[ showOptions ? 'jc-fe' : 'jc-sb' ]">
+      <header
+        class="header flex"
+        v-bind:class="[showOptions ? 'jc-fe' : 'jc-sb']"
+      >
         <transition name="fade">
-        <ScoreDisplay
-        v-bind:playerScore="playerScore"
-        v-if="!showOptions" />
+          <ScoreDisplay v-bind:playerScore="playerScore" v-if="!showOptions" />
         </transition>
         <transition name="fade">
-        <ProgressDisplay 
-        v-bind:playerProgress="playerProgress"
-        v-if="!showOptions" />
+          <ProgressDisplay
+            v-bind:playerProgress="playerProgress"
+            v-if="!showOptions"
+          />
         </transition>
         <OptionsBtn
-        v-on:toggle-options="toggleOptions"
-        v-bind:showOptions="showOptions" />
+          v-on:toggle-options="toggleOptions"
+          v-bind:showOptions="showOptions"
+        />
       </header>
       <SelectDifficulty
         v-bind:diffOptions="diffOptions"
         v-on:send-difficulty="setDifficultyString"
+        v-if="showOptions"
       />
       <SelectCategory
         v-bind:categoryOptions="categoryOptions"
         v-on:send-category="setCategoryString"
+        v-if="showOptions"
       />
-      <StartBtn />
+      <StartBtn v-on:start-game="getQuestions" v-if="showOptions" />
+      <QuestionDisplay
+        v-if="requestSuccessful"
+        v-bind:questions="questions"
+        v-bind:playerProgress="playerProgress"
+      />
+      <AnswersDisplay 
+      v-if="requestSuccessful"
+      v-bind:answers="answers"
+      v-bind:playerProgress="playerProgress"
+      v-bind:correctAnswers="correctAnswers" />
     </div>
   </div>
 </template>
@@ -38,6 +52,8 @@ import SelectCategory from "./components/SelectCategory";
 import StartBtn from "./components/StartBtn";
 import ScoreDisplay from "./components/ScoreDisplay";
 import ProgressDisplay from "./components/ProgressDisplay";
+import QuestionDisplay from "./components/QuestionDisplay";
+import AnswersDisplay from "./components/AnswersDisplay";
 
 export default {
   name: "App",
@@ -47,11 +63,14 @@ export default {
     SelectCategory,
     StartBtn,
     ScoreDisplay,
-    ProgressDisplay
+    ProgressDisplay,
+    QuestionDisplay,
+    AnswersDisplay
   },
   data() {
     return {
       showOptions: true,
+      requestSuccessful: false,
       diffOptions: [
         { text: "easy", value: "&difficulty=easy" },
         { text: "medium", value: "&difficulty=medium" },
@@ -65,11 +84,14 @@ export default {
       categoryString: "&category=9",
       playerScore: 0,
       playerProgress: 0,
+      questions: [],
+      answers: [],
+      correctAnswers: [],
     };
   },
   computed: {
     api_url: function () {
-      return `https://opentdb.com/api.php?amount=10${this.categoryString}${this.difficultyString}`;
+      return `https://opentdb.com/api.php?amount=10${this.categoryString}${this.difficultyString}&type=multiple`;
     },
   },
   methods: {
@@ -81,7 +103,20 @@ export default {
     },
     toggleOptions() {
       this.showOptions = !this.showOptions;
-    }
+    },
+    getQuestions: async function () {
+      const response = await fetch(this.api_url);
+      const data = await response.json();
+      data.results.forEach((element) => {
+        this.questions.push(element.question);
+        let temp = [...element.incorrect_answers, element.correct_answer];
+        temp.sort();
+        this.answers.push(temp);
+        this.correctAnswers.push(element.correct_answer);
+      });
+      this.showOptions = !this.showOptions;
+      this.requestSuccessful = true;
+    },
   },
 };
 </script>
@@ -119,11 +154,13 @@ export default {
   }
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: transform .5s ease-out;
+.fade-enter-active,
+.fade-leave-active {
+  transition: transform 0.5s ease-out;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   transform: translate(-300%, 0);
 }
 </style>

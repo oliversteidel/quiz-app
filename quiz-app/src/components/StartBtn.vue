@@ -1,5 +1,6 @@
 <template>
-  <button class="btn--start">start</button>
+  <button class="btn--start"
+  @click="$emit('start-game')" >start</button>
 </template>
 
 <script>
@@ -24,5 +25,6 @@ export default {
   font-weight: 300;
   color: $lightOrange;
   box-shadow: $shadow;
+  cursor: pointer;
 }
 </style>
