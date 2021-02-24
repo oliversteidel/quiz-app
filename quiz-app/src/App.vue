@@ -40,7 +40,9 @@
       v-if="requestSuccessful"
       v-bind:answers="answers"
       v-bind:playerProgress="playerProgress"
-      v-bind:correctAnswers="correctAnswers" />
+      v-bind:correctAnswers="correctAnswers"
+      v-on:update-progress="updateProgress"
+      v-on:update-score="updateScore" />
     </div>
   </div>
 </template>
@@ -117,6 +119,12 @@ export default {
       this.showOptions = !this.showOptions;
       this.requestSuccessful = true;
     },
+    updateProgress() {
+      this.playerProgress++;
+    },
+    updateScore() {
+      this.playerScore++;
+    }
   },
 };
 </script>

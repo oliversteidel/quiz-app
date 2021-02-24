@@ -3,9 +3,7 @@
     <ul class="answer-list flex-col ai-c">
       <li
         class="answer flex ai-c jc-c"
-        v-bind:correctAnswers="correctAnswers"
-        v-bind:playerProgress="playerProgress"
-        v-bind:class="{ correct : isCorrect }"
+        v-bind:playerProgress="playerProgress"        
         v-for="answer in answers[playerProgress]"
         :key="answer"
         @click="evaluateAnswer"
@@ -20,19 +18,34 @@
 export default {
   name: "AnswersDisplay",
   props: ["answers", "correctAnswers", "playerProgress"],
-  data() {
-      return {
-          isCorrect: false
-      }
-  },
+
+
   methods: {
-      evaluateAnswer() {
-          console.log(this.answer);
-          if(this.answer === this.correctAnswers[this.playerProgress]) {
-              this.isCorrect = true;
-          }
+    evaluateAnswer(event) {
+      let playerAnswer = event.target.innerHTML.slice(1, -1);
+      let veryfier = this.correctAnswers[this.playerProgress];
+      if (playerAnswer === veryfier) {
+        event.target.classList.add("correct");
+        this.$emit('update-score');
+      } else {
+        event.target.classList.add("incorrect");
+        setTimeout(() => {
+          this.showCorrectAnswer();
+        }, 1500);
       }
-  }
+      this.$emit('update-progress');
+    },
+    showCorrectAnswer() {
+      const answerElements = document.querySelectorAll(".answer");
+      answerElements.forEach((el) => {
+        if (
+          el.innerHTML.slice(1, -1) === this.correctAnswers[this.playerProgress]
+        ) {
+          el.classList.add("correct");
+        }
+      });
+    },
+  },
 };
 </script>
 
@@ -40,11 +53,11 @@ export default {
 @import "../styles/_globals.scss";
 
 .wrapper {
-    width: 100%;
+  width: 100%;
 }
 
 .answer-list {
-    width: 100%;
+  width: 100%;
 }
 
 .answer {
@@ -60,22 +73,22 @@ export default {
   font-size: 1.5625rem;
   font-weight: 300;
   color: $lightOrange;
-  box-shadow: $shadow;  
+  box-shadow: $shadow;
   cursor: pointer;
-  transition: transform .3s ease;
+  transition: transform 0.3s ease;
 }
 
 .answer:hover {
-    transform: scale(0.98);
+  transform: scale(0.98);
 }
 
 .correct {
-    color: $green;
+  color: $green;
+  border: 2px solid $green;
 }
 
 .incorrect {
-    color: $red;
+  color: $red;
+  border: 2px solid $red;
 }
-
-
 </style>
