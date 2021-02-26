@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import he from "he"; //library encodes/decodes special characters (&#34; => ")
 import OptionsBtn from "./components/OptionsBtn";
 import SelectDifficulty from "./components/SelectDifficulty";
 import SelectCategory from "./components/SelectCategory";
@@ -82,6 +83,11 @@ export default {
         { text: "general knowlege", value: "&category=9" },
         { text: "entertainment: film", value: "&category=11" },
       ],
+      resultComments: [
+        { bad: "Well yes, nice try! You should consider reading a book."},
+        { good: "OK, there are actually things you know."},
+        { excellent: "Wow, you are the smartest person in front of this screen!"}
+      ],
       difficultyString: "&difficulty=easy",
       categoryString: "&category=9",
       playerScore: 0,
@@ -110,11 +116,12 @@ export default {
       const response = await fetch(this.api_url);
       const data = await response.json();
       data.results.forEach((element) => {
-        this.questions.push(element.question);
-        let temp = [...element.incorrect_answers, element.correct_answer];
+        this.questions.push(he.decode(element.question));
+        let temp = [...element.incorrect_answers, element.correct_answer];        
         temp.sort();
-        this.answers.push(temp);
-        this.correctAnswers.push(element.correct_answer);
+        let decodedAnswers = temp.map(el => he.decode(el));
+        this.answers.push(decodedAnswers);
+        this.correctAnswers.push(he.decode(element.correct_answer));
       });
       this.showOptions = !this.showOptions;
       this.requestSuccessful = true;

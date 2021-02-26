@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper flex jc-c">
+  <div class="wrapper flex-col ai-c">
     <ul class="answer-list flex-col ai-c">
       <li
         class="answer flex ai-c jc-c"
@@ -11,13 +11,14 @@
         {{ answer }}
       </li>
     </ul>
+    <button class="btn--next" @click="$emit('update-progress')">next question</button>
   </div>
 </template>
 
 <script>
 export default {
   name: "AnswersDisplay",
-  props: ["answers", "correctAnswers", "playerProgress"],
+  props: ["answers", "correctAnswers", "playerProgress", "showOptions"],
 
 
   methods: {
@@ -31,9 +32,9 @@ export default {
         event.target.classList.add("incorrect");
         setTimeout(() => {
           this.showCorrectAnswer();
-        }, 1500);
+        }, 1000);
       }
-      this.$emit('update-progress');
+      
     },
     showCorrectAnswer() {
       const answerElements = document.querySelectorAll(".answer");
@@ -58,15 +59,16 @@ export default {
 
 .answer-list {
   width: 100%;
+  margin-bottom: 2rem;
 }
 
 .answer {
   list-style: none;
   width: 100%;
   max-width: 18.75rem;
-  height: 4.6875rem;
+  min-height: 3.125rem;
   padding: 0 1em;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   background: $darkGray;
   border-radius: 0.625rem;
   font-family: "Londrina Solid", cursive;
@@ -90,5 +92,22 @@ export default {
 .incorrect {
   color: $red;
   border: 2px solid $red;
+}
+
+.btn--next {
+  border: none;
+  outline: none;
+  width: 100%;
+  max-width: 18.75rem;
+  height: 4.6875rem;
+  padding: 0 1em;
+  background: $darkGray;
+  border-radius: 0.625rem;
+  font-family: "Londrina Solid", cursive;
+  font-size: 1.5625rem;
+  font-weight: 300;
+  color: $lightOrange;
+  box-shadow: $shadow;
+  cursor: pointer;
 }
 </style>
