@@ -35,6 +35,7 @@
         v-if="requestSuccessful"
         v-bind:questions="questions"
         v-bind:playerProgress="playerProgress"
+        v-bind:playerScore="playerScore"
       />
       <AnswersDisplay 
       v-if="requestSuccessful"
@@ -72,6 +73,7 @@ export default {
   },
   data() {
     return {
+      sessionToken: '',
       showOptions: true,
       requestSuccessful: false,
       diffOptions: [
@@ -83,11 +85,7 @@ export default {
         { text: "general knowlege", value: "&category=9" },
         { text: "entertainment: film", value: "&category=11" },
       ],
-      resultComments: [
-        { bad: "Well yes, nice try! You should consider reading a book."},
-        { good: "OK, there are actually things you know."},
-        { excellent: "Wow, you are the smartest person in front of this screen!"}
-      ],
+      
       difficultyString: "&difficulty=easy",
       categoryString: "&category=9",
       playerScore: 0,
@@ -99,7 +97,7 @@ export default {
   },
   computed: {
     api_url: function () {
-      return `https://opentdb.com/api.php?amount=10${this.categoryString}${this.difficultyString}&type=multiple`;
+      return `https://opentdb.com/api.php?amount=10${this.categoryString}${this.difficultyString}&type=multiple&token=${this.sessionToken}`;
     },
   },
   methods: {
@@ -112,9 +110,17 @@ export default {
     toggleOptions() {
       this.showOptions = !this.showOptions;
     },
+    getSessionToken: async function () {
+      const response = await fetch('https://opentdb.com/api_token.php?command=request');
+      const token = await response.json();
+      this.sessionToken = await token.token;
+
+    },
     getQuestions: async function () {
+      
       const response = await fetch(this.api_url);
       const data = await response.json();
+      console.log(data);
       data.results.forEach((element) => {
         this.questions.push(he.decode(element.question));
         let temp = [...element.incorrect_answers, element.correct_answer];        
@@ -127,12 +133,23 @@ export default {
       this.requestSuccessful = true;
     },
     updateProgress() {
-      this.playerProgress++;
+      if(this.playerProgress < 10) {
+        this.playerProgress++;
+      }else{
+        this.playerProgress = 0;
+        this.showOptions = true;
+        this.requestSuccessful = false;
+      }
+      
     },
     updateScore() {
       this.playerScore++;
     }
-  },
+  },  
+  mounted: function() {
+    this.getSessionToken();
+  }
+  
 };
 </script>
 

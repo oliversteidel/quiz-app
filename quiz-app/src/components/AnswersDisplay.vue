@@ -11,7 +11,7 @@
         {{ answer }}
       </li>
     </ul>
-    <button class="btn--next" @click="$emit('update-progress')">next question</button>
+    <button class="btn--next" @click="$emit('update-progress')">{{nextBtnText}}</button>
   </div>
 </template>
 
@@ -19,6 +19,15 @@
 export default {
   name: "AnswersDisplay",
   props: ["answers", "correctAnswers", "playerProgress", "showOptions"],
+  computed: {
+    nextBtnText: function () {
+      if(this.playerProgress < 9) {
+        return "next question"
+      }else{
+        return "finish"
+      }
+    }
+  },
 
 
   methods: {
