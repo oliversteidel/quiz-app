@@ -86,7 +86,7 @@ export default {
   color: $lightOrange;
   box-shadow: $shadow;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease-in;
 }
 
 .answer:hover {
@@ -118,5 +118,10 @@ export default {
   color: $lightOrange;
   box-shadow: $shadow;
   cursor: pointer;
+  transition: all 0.3s ease-in;
+}
+
+.btn--next:hover {
+  transform: scale(0.98);
 }
 </style>

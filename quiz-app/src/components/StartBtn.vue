@@ -24,7 +24,9 @@ export default {
   font-size: 1.5625rem;
   font-weight: 300;
   color: $lightOrange;
-  box-shadow: $shadow;
+  box-shadow: $shadow;    
   cursor: pointer;
 }
+
+
 </style>

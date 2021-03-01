@@ -6,10 +6,10 @@
         class="header flex"
         v-bind:class="[showOptions ? 'jc-fe' : 'jc-sb']"
       >
-        <transition name="fade">
+        <transition name="fade-left">
           <ScoreDisplay v-bind:playerScore="playerScore" v-if="!showOptions" />
         </transition>
-        <transition name="fade">
+        <transition name="fade-left">
           <ProgressDisplay
             v-bind:playerProgress="playerProgress"
             v-if="!showOptions"
@@ -20,30 +20,44 @@
           v-bind:showOptions="showOptions"
         />
       </header>
+      <transition name="fade-right">
       <SelectDifficulty
         v-bind:diffOptions="diffOptions"
         v-on:send-difficulty="setDifficultyString"
         v-if="showOptions"
       />
+      </transition>
+      <transition name="fade-right">
       <SelectCategory
         v-bind:categoryOptions="categoryOptions"
         v-on:send-category="setCategoryString"
         v-if="showOptions"
       />
+      </transition>
+      <p class="error-message" v-if="apiCallFailed">
+        No connection to database. Please try again later.
+      </p>
+      <transition name="fade-right">
       <StartBtn v-on:start-game="getQuestions" v-if="showOptions" />
+      </transition>
+      <transition name="fade-left">
       <QuestionDisplay
         v-if="requestSuccessful"
         v-bind:questions="questions"
         v-bind:playerProgress="playerProgress"
         v-bind:playerScore="playerScore"
       />
-      <AnswersDisplay 
-      v-if="requestSuccessful"
-      v-bind:answers="answers"
-      v-bind:playerProgress="playerProgress"
-      v-bind:correctAnswers="correctAnswers"
-      v-on:update-progress="updateProgress"
-      v-on:update-score="updateScore" />
+      </transition>
+      <transition name="fade-left">
+      <AnswersDisplay
+        v-if="requestSuccessful"
+        v-bind:answers="answers"
+        v-bind:playerProgress="playerProgress"
+        v-bind:correctAnswers="correctAnswers"
+        v-on:update-progress="updateProgress"
+        v-on:update-score="updateScore"
+      />
+      </transition>
     </div>
   </div>
 </template>
@@ -69,13 +83,14 @@ export default {
     ScoreDisplay,
     ProgressDisplay,
     QuestionDisplay,
-    AnswersDisplay
+    AnswersDisplay,
   },
   data() {
     return {
-      sessionToken: '',
+      sessionToken: "",
       showOptions: true,
       requestSuccessful: false,
+      apiCallFailed: false,
       diffOptions: [
         { text: "easy", value: "&difficulty=easy" },
         { text: "medium", value: "&difficulty=medium" },
@@ -85,7 +100,7 @@ export default {
         { text: "general knowlege", value: "&category=9" },
         { text: "entertainment: film", value: "&category=11" },
       ],
-      
+
       difficultyString: "&difficulty=easy",
       categoryString: "&category=9",
       playerScore: 0,
@@ -111,45 +126,54 @@ export default {
       this.showOptions = !this.showOptions;
     },
     getSessionToken: async function () {
-      const response = await fetch('https://opentdb.com/api_token.php?command=request');
+      const response = await fetch(
+        "https://opentdb.com/api_token.php?command=request"
+      );
       const token = await response.json();
       this.sessionToken = await token.token;
-
     },
     getQuestions: async function () {
-      
-      const response = await fetch(this.api_url);
-      const data = await response.json();
-      console.log(data);
-      data.results.forEach((element) => {
-        this.questions.push(he.decode(element.question));
-        let temp = [...element.incorrect_answers, element.correct_answer];        
-        temp.sort();
-        let decodedAnswers = temp.map(el => he.decode(el));
-        this.answers.push(decodedAnswers);
-        this.correctAnswers.push(he.decode(element.correct_answer));
-      });
-      this.showOptions = !this.showOptions;
-      this.requestSuccessful = true;
+      try {
+        this.emptyQuestionsAndAnswers();
+        const response = await fetch(this.api_url);
+        const data = await response.json();
+        console.log(data);
+        data.results.forEach((element) => {
+          this.questions.push(he.decode(element.question));
+          let temp = [...element.incorrect_answers, element.correct_answer];
+          temp.sort();
+          let decodedAnswers = temp.map((el) => he.decode(el));
+          this.answers.push(decodedAnswers);
+          this.correctAnswers.push(he.decode(element.correct_answer));
+        });
+        this.showOptions = !this.showOptions;
+        this.requestSuccessful = true;
+      } catch (err) {
+        console.log(err);
+        this.apiCallFailed = true;
+      }
     },
     updateProgress() {
-      if(this.playerProgress < 10) {
+      if (this.playerProgress < 10) {
         this.playerProgress++;
-      }else{
+      } else {
         this.playerProgress = 0;
         this.showOptions = true;
         this.requestSuccessful = false;
       }
-      
     },
     updateScore() {
       this.playerScore++;
+    },
+    emptyQuestionsAndAnswers() {
+      this.questions = [];
+      this.answers = [];
+      this.correctAnswers = [];
     }
-  },  
-  mounted: function() {
+  },
+  mounted: function () {
     this.getSessionToken();
-  }
-  
+  },
 };
 </script>
 
@@ -157,8 +181,7 @@ export default {
 @import "./styles/_globals.scss";
 
 #app {
-  width: 100vw;
-  height: 100vh;
+  width: 100vw;  
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -167,32 +190,48 @@ export default {
   .title {
     font-size: 6.25rem;
     font-weight: 400;
+    margin: 1rem 0;
     color: $lightOrange;
   }
 
   .container {
-    width: 100%;
+    width: 100%;    
     max-width: 33.75rem;
+    min-height: 90vh;
     padding: 2rem;
     border-radius: 0.625rem;
     background: $orangeGradient;
     overflow: hidden;
 
     .header {
-      margin-bottom: 5rem;
+      margin-bottom: 3rem;
       width: 100%;
       //overflow-x: hidden;
     }
   }
 }
 
-.fade-enter-active,
-.fade-leave-active {
+.fade-left-enter-active {
+  transition: transform 0.5s ease-in;
+}
+.fade-left-leave-active {
   transition: transform 0.5s ease-out;
 }
 
-.fade-enter,
-.fade-leave-to {
+.fade-left-enter,
+.fade-left-leave-to {
   transform: translate(-300%, 0);
+}
+
+.fade-right-enter-active {
+  transition: transform 0.5s ease-in;
+}
+.fade-right-leave-active {
+  transition: transform 0.5s ease-out;
+}
+
+.fade-right-enter,
+.fade-right-leave-to {
+  transform: translate(300%, 0);
 }
 </style>
