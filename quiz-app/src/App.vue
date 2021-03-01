@@ -20,43 +20,45 @@
           v-bind:showOptions="showOptions"
         />
       </header>
+      
       <transition name="fade-right">
-      <SelectDifficulty
-        v-bind:diffOptions="diffOptions"
-        v-on:send-difficulty="setDifficultyString"
-        v-if="showOptions"
-      />
+        <SelectDifficulty
+          v-bind:diffOptions="diffOptions"
+          v-on:send-difficulty="setDifficultyString"
+          v-if="showOptions"
+        />
       </transition>
       <transition name="fade-right">
-      <SelectCategory
-        v-bind:categoryOptions="categoryOptions"
-        v-on:send-category="setCategoryString"
-        v-if="showOptions"
-      />
+        <SelectCategory
+          v-bind:categoryOptions="categoryOptions"
+          v-on:send-category="setCategoryString"
+          v-if="showOptions"
+        />
       </transition>
       <p class="error-message" v-if="apiCallFailed">
         No connection to database. Please try again later.
       </p>
       <transition name="fade-right">
-      <StartBtn v-on:start-game="getQuestions" v-if="showOptions" />
+        <StartBtn v-on:start-game="getQuestions" v-if="showOptions" />
       </transition>
       <transition name="fade-left">
-      <QuestionDisplay
-        v-if="requestSuccessful"
-        v-bind:questions="questions"
-        v-bind:playerProgress="playerProgress"
-        v-bind:playerScore="playerScore"
-      />
+        <QuestionDisplay
+          v-if="requestSuccessful"
+          v-bind:questions="questions"
+          v-bind:playerProgress="playerProgress"
+          v-bind:playerScore="playerScore"
+        />
       </transition>
       <transition name="fade-left">
-      <AnswersDisplay
-        v-if="requestSuccessful"
-        v-bind:answers="answers"
-        v-bind:playerProgress="playerProgress"
-        v-bind:correctAnswers="correctAnswers"
-        v-on:update-progress="updateProgress"
-        v-on:update-score="updateScore"
-      />
+        <AnswersDisplay
+          v-if="requestSuccessful"
+          v-bind:answers="answers"
+          v-bind:playerProgress="playerProgress"
+          v-bind:correctAnswers="correctAnswers"
+          v-on:update-progress="updateProgress"
+          v-on:update-score="updateScore"
+          v-on:play-again="[updateProgress(), getQuestions()]"
+        />
       </transition>
     </div>
   </div>
@@ -123,7 +125,10 @@ export default {
       this.categoryString = value;
     },
     toggleOptions() {
-      this.showOptions = !this.showOptions;
+      if (this.questions.length !== 0) {
+        this.showOptions = !this.showOptions;
+        this.requestSuccessful = !this.requestSuccessful;
+      }
     },
     getSessionToken: async function () {
       const response = await fetch(
@@ -134,6 +139,8 @@ export default {
     },
     getQuestions: async function () {
       try {
+        this.playerScore = 0;
+        this.playerProgress = 0;
         this.emptyQuestionsAndAnswers();
         const response = await fetch(this.api_url);
         const data = await response.json();
@@ -169,7 +176,7 @@ export default {
       this.questions = [];
       this.answers = [];
       this.correctAnswers = [];
-    }
+    },
   },
   mounted: function () {
     this.getSessionToken();
@@ -181,21 +188,21 @@ export default {
 @import "./styles/_globals.scss";
 
 #app {
-  width: 100vw;  
+  width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   background: $darkGray;
 
   .title {
-    font-size: 6.25rem;
+    font-size: 5rem;
     font-weight: 400;
     margin: 1rem 0;
     color: $lightOrange;
   }
 
   .container {
-    width: 100%;    
+    width: 100%;
     max-width: 33.75rem;
     min-height: 90vh;
     padding: 2rem;

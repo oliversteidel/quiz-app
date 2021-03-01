@@ -12,6 +12,7 @@
       </li>
     </ul>
     <button class="btn--next" @click="$emit('update-progress')">{{nextBtnText}}</button>
+    <button class="btn--next" v-if="playerProgress === 10" @click="$emit('play-again')">play again</button>
   </div>
 </template>
 
@@ -76,12 +77,12 @@ export default {
   width: 100%;
   max-width: 18.75rem;
   min-height: 3.125rem;
-  padding: 0 1em;
+  padding: 0.5em 1em;
   margin-bottom: 1.5rem;
   background: $darkGray;
   border-radius: 0.625rem;
   font-family: "Londrina Solid", cursive;
-  font-size: 1.5625rem;
+  font-size: 1.5rem;
   font-weight: 300;
   color: $lightOrange;
   box-shadow: $shadow;
@@ -110,6 +111,7 @@ export default {
   max-width: 18.75rem;
   height: 4.6875rem;
   padding: 0 1em;
+  margin-bottom: 1rem;
   background: $darkGray;
   border-radius: 0.625rem;
   font-family: "Londrina Solid", cursive;

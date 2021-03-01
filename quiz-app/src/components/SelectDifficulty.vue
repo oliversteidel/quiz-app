@@ -73,7 +73,7 @@ export default {
 
 @keyframes moveup {
   0% {
-    transform: translate(1rem, 3.5rem);
+    transform: translate(1rem, 3.6rem);
   }  
   100% {
     transform: translate(0);
@@ -85,7 +85,7 @@ label {
   font-weight: 300;
   align-self: flex-start;
   margin-bottom: 0.5rem;
-  transform: translate(1rem, 3.5rem);
+  transform: translate(1rem, 3.6rem);
   color: $lightOrange;
   transition: color 0.75s ease-in;
 }
