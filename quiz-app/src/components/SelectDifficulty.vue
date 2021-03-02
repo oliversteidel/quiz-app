@@ -50,7 +50,7 @@ export default {
   width: 100%;
   max-width: 18.75rem;
   position: relative;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .wrapper--difficulty::before {

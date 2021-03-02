@@ -102,13 +102,13 @@ export default {
       ],
       categoryOptions: [
         { text: "general knowlege", value: "&category=9" },
-        { text: "entertainment: books", value: "&category=10" },
-        { text: "entertainment: film", value: "&category=11" },
-        { text: "entertainment: music", value: "&category=12" },
-        { text: "entertainment: musicals & theatre", value: "&category=13" },
-        { text: "entertainment: television", value: "&category=14" },
-        { text: "entertainment: video games", value: "&category=15" },
-        { text: "entertainment: board games", value: "&category=16" },
+        { text: "books", value: "&category=10" },
+        { text: "film", value: "&category=11" },
+        { text: "music", value: "&category=12" },
+        { text: "musicals & theatre", value: "&category=13" },
+        { text: "television", value: "&category=14" },
+        { text: "video games", value: "&category=15" },
+        { text: "board games", value: "&category=16" },
         { text: "science & nature", value: "&category=17" },
         { text: "science: computers", value: "&category=18" },
         { text: "science: mathematics", value: "&category=19" },
@@ -237,28 +237,36 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 1rem;
   background: $darkGray;
 
   .title {
-    font-size: 5rem;
+    font-size: 3.75rem;
     font-weight: 400;
     margin: 1rem 0;
     color: $lightOrange;
+
+    @include breakpoint-up($medium) {
+      font-size: 5rem;
+    }
   }
 
   .container {
     width: 100%;
     max-width: 33.75rem;
     min-height: 90vh;
-    padding: 2rem;
+    padding: 1rem;
     border-radius: 0.625rem;
     background: $orangeGradient;
     overflow: hidden;
 
     .header {
-      margin-bottom: 3rem;
+      margin-bottom: 1.5rem;
       width: 100%;
-      //overflow-x: hidden;
+      
+      @include breakpoint-up($medium) {
+        margin-bottom: 3rem;
+      }
     }
 
     .error-message {

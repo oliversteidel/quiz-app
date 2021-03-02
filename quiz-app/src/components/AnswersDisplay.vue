@@ -82,12 +82,16 @@ export default {
   background: $darkGray;
   border-radius: 0.625rem;
   font-family: "Londrina Solid", cursive;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 300;
   color: $lightOrange;
   box-shadow: $shadow;
   cursor: pointer;
   transition: all 0.3s ease-in;
+
+  @include breakpoint-up($medium) {
+    font-size: 1.5rem;
+  }
 }
 
 .answer:hover {

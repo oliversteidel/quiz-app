@@ -36,7 +36,7 @@ export default {
     showResult: function () {
       if (this.playerScore < 4) {
         return this.resultComments.bad;
-      } else if (this.playerScore > 4 && this.playerScore < 7) {
+      } else if (this.playerScore >= 4 && this.playerScore < 7) {
         return this.resultComments.good;
       } else {
         return this.resultComments.excellent;
@@ -50,10 +50,17 @@ export default {
 @import "../styles/_globals.scss";
 
 p {
-  font-size: 2rem;
+  font-size: 1.75rem;
   color: $darkGray;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
+  font-weight: 400;
   opacity: 1;
+
+  @include breakpoint-up($medium) {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 3rem;
+  }
 }
 
 .fade-in-enter-active {
