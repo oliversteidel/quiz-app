@@ -95,13 +95,11 @@ export default {
 }
 
 .correct {
-  color: $green;
-  border: 2px solid $green;
+  color: $green;  
 }
 
 .incorrect {
-  color: $red;
-  border: 2px solid $red;
+  color: $red;  
 }
 
 .btn--next {

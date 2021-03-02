@@ -20,7 +20,7 @@
           v-bind:showOptions="showOptions"
         />
       </header>
-      
+
       <transition name="fade-right">
         <SelectDifficulty
           v-bind:diffOptions="diffOptions"
@@ -36,7 +36,7 @@
         />
       </transition>
       <p class="error-message" v-if="apiCallFailed">
-        No connection to database. Please try again later.
+        {{ errorMessage }}
       </p>
       <transition name="fade-right">
         <StartBtn v-on:start-game="getQuestions" v-if="showOptions" />
@@ -93,6 +93,8 @@ export default {
       showOptions: true,
       requestSuccessful: false,
       apiCallFailed: false,
+      apiResponseCode: 0,
+      errorMessage: "",
       diffOptions: [
         { text: "easy", value: "&difficulty=easy" },
         { text: "medium", value: "&difficulty=medium" },
@@ -100,7 +102,25 @@ export default {
       ],
       categoryOptions: [
         { text: "general knowlege", value: "&category=9" },
+        { text: "entertainment: books", value: "&category=10" },
         { text: "entertainment: film", value: "&category=11" },
+        { text: "entertainment: music", value: "&category=12" },
+        { text: "entertainment: musicals & theatre", value: "&category=13" },
+        { text: "entertainment: television", value: "&category=14" },
+        { text: "entertainment: video games", value: "&category=15" },
+        { text: "entertainment: board games", value: "&category=16" },
+        { text: "science & nature", value: "&category=17" },
+        { text: "science: computers", value: "&category=18" },
+        { text: "science: mathematics", value: "&category=19" },
+        { text: "mythology", value: "&category=20" },
+        { text: "sports", value: "&category=21" },
+        { text: "geography", value: "&category=22" },
+        { text: "history", value: "&category=23" },
+        { text: "politics", value: "&category=24" },
+        { text: "art", value: "&category=25" },
+        { text: "celebrities", value: "&category=26" },
+        { text: "animals", value: "&category=27" },
+        { text: "vehicles", value: "&category=28" },
       ],
 
       difficultyString: "&difficulty=easy",
@@ -139,25 +159,50 @@ export default {
     },
     getQuestions: async function () {
       try {
+        //reset conditional values
+        this.apiCallFailed = false;
         this.playerScore = 0;
         this.playerProgress = 0;
         this.emptyQuestionsAndAnswers();
+
+        //fetch data form api
         const response = await fetch(this.api_url);
         const data = await response.json();
         console.log(data);
+
+        //check api response-code
+        //response codes:
+        // Code 0: Success - Returned results successfully.
+        // Code 1: No Results - Could not return results. The API doesn't have enough questions for your query. (Ex. Asking for 50 Questions in a Category that only has 20.)
+        // Code 2: Invalid Parameter Contains an invalid parameter. Arguements passed in aren't valid. (Ex. Amount = Five)
+        // Code 3: Token Not Found - Session Token does not exist.
+        // Code 4: Token Empty - Session Token has returned all possible questions for the specified query. Resetting the Token is necessary.
+        this.apiResponseCode = data.response_code;
+        if (data.response_code === 4) {
+          this.apiCallFailed = true;
+          this.errorMessage =
+            "Can't find questions. Try changing the difficulty or select another category.";
+          return;
+        }
+
         data.results.forEach((element) => {
           this.questions.push(he.decode(element.question));
           let temp = [...element.incorrect_answers, element.correct_answer];
+          //sort answers alphabetically, that correct answer is not at the same index constantly
           temp.sort();
+
           let decodedAnswers = temp.map((el) => he.decode(el));
           this.answers.push(decodedAnswers);
           this.correctAnswers.push(he.decode(element.correct_answer));
         });
+        //toggle options display and show QuestionsDisplay and AnswersDisplay
         this.showOptions = !this.showOptions;
         this.requestSuccessful = true;
       } catch (err) {
         console.log(err);
         this.apiCallFailed = true;
+        this.errorMessage =
+          "No connection to database. Please try again later.";
       }
     },
     updateProgress() {
@@ -214,6 +259,12 @@ export default {
       margin-bottom: 3rem;
       width: 100%;
       //overflow-x: hidden;
+    }
+
+    .error-message {
+      font-size: 2rem;
+      color: $darkGray;
+      margin-bottom: 3rem;
     }
   }
 }
