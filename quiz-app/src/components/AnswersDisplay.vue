@@ -42,7 +42,7 @@ export default {
         event.target.classList.add("incorrect");
         setTimeout(() => {
           this.showCorrectAnswer();
-        }, 1000);
+        }, 500);
       }
       
     },

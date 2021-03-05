@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper--score flex-col ai-c">
+  <div class="wrapper--score flex-col ai-c" v-bind:class="{ 'inactive' : showOptions }">
     <p>score</p>
     <p v-bind:playerScore="playerScore" class="score-number">{{ this.playerScore }}</p>
   </div>
@@ -8,7 +8,7 @@
 <script>
 export default {
   name: "ScoreDisplay",
-  props: ["playerScore"],
+  props: ["playerScore", "showOptions"],
 };
 </script>
 
@@ -22,6 +22,7 @@ export default {
   background: $darkGray;
   color: $lightOrange;
   box-shadow: $shadow;
+  transition: transform 0.5s ease-in;
 
   @include breakpoint-up($medium) {
     width: 6.25rem;
@@ -44,5 +45,9 @@ export default {
         font-size: 3.125rem;
       }
   }
+}
+
+.inactive {
+  transform: translateX(-540px);
 }
 </style>

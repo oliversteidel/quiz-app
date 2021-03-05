@@ -2,19 +2,11 @@
   <div id="app">
     <h1 class="title">Do you know?</h1>
     <div class="container flex-col ai-c">
-      <header
-        class="header flex"
-        v-bind:class="[showOptions ? 'jc-fe' : 'jc-sb']"
-      >
-        <transition name="fade-left">
-          <ScoreDisplay v-bind:playerScore="playerScore" v-if="!showOptions" />
-        </transition>
-        <transition name="fade-left">
-          <ProgressDisplay
-            v-bind:playerProgress="playerProgress"
-            v-if="!showOptions"
-          />
-        </transition>
+      <header class="header flex jc-sb">
+        <ScoreDisplay v-bind:playerScore="playerScore" v-bind:showOptions="showOptions" />
+
+        <ProgressDisplay v-bind:playerProgress="playerProgress" v-bind:showOptions="showOptions" />
+
         <OptionsBtn
           v-on:toggle-options="toggleOptions"
           v-bind:showOptions="showOptions"
@@ -47,6 +39,7 @@
           v-bind:questions="questions"
           v-bind:playerProgress="playerProgress"
           v-bind:playerScore="playerScore"
+          v-bind:key="rerenderKey"
         />
       </transition>
       <transition name="fade-left">
@@ -55,7 +48,8 @@
           v-bind:answers="answers"
           v-bind:playerProgress="playerProgress"
           v-bind:correctAnswers="correctAnswers"
-          v-on:update-progress="updateProgress"
+          v-bind:key="rerenderKey"
+          v-on:update-progress="[updateProgress(), forceRerender()]"
           v-on:update-score="updateScore"
           v-on:play-again="[updateProgress(), getQuestions()]"
         />
@@ -130,6 +124,7 @@ export default {
       questions: [],
       answers: [],
       correctAnswers: [],
+      rerenderKey: 0
     };
   },
   computed: {
@@ -222,8 +217,11 @@ export default {
       this.answers = [];
       this.correctAnswers = [];
     },
+    forceRerender() {
+      this.rerenderKey += 1;
+    }
   },
-  mounted: function () {
+  mounted() {
     this.getSessionToken();
   },
 };
@@ -263,7 +261,7 @@ export default {
     .header {
       margin-bottom: 1.5rem;
       width: 100%;
-      
+
       @include breakpoint-up($medium) {
         margin-bottom: 3rem;
       }
@@ -278,15 +276,20 @@ export default {
 }
 
 .fade-left-enter-active {
-  transition: transform 0.5s ease-in;
+  transition: all 0.6s ease-in;
 }
 .fade-left-leave-active {
-  transition: transform 0.5s ease-out;
+  transition: all 0.4s ease-out;
 }
 
-.fade-left-enter,
+.fade-left-enter {
+  transform: translateY(300%);
+  opacity: 1;
+}
+
 .fade-left-leave-to {
-  transform: translate(-300%, 0);
+  opacity: 0;
+  
 }
 
 .fade-right-enter-active {
