@@ -113,7 +113,7 @@ export default {
   max-width: 18.75rem;
   height: 4.6875rem;
   padding: 0 1em;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   background: $darkGray;
   border-radius: 0.625rem;
   font-family: "Londrina Solid", cursive;

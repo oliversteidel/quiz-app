@@ -3,57 +3,68 @@
     <h1 class="title">Do you know?</h1>
     <div class="container flex-col ai-c">
       <header class="header flex jc-sb">
-        <ScoreDisplay v-bind:playerScore="playerScore" v-bind:showOptions="showOptions" />
+        <ScoreDisplay
+          v-bind:playerScore="playerScore"
+          v-bind:showOptions="showOptions"
+        />
 
-        <ProgressDisplay v-bind:playerProgress="playerProgress" v-bind:showOptions="showOptions" />
+        <ProgressDisplay
+          v-bind:playerProgress="playerProgress"
+          v-bind:showOptions="showOptions"
+        />
 
         <OptionsBtn
           v-on:toggle-options="toggleOptions"
           v-bind:showOptions="showOptions"
         />
       </header>
+      <div class="outer-wrapper">
+        <div class="inner-wrapper flex" v-bind:showOptions="showOptions" v-bind:class="{ 'active' : showOptions}">
+          <div class="options-container flex-col ai-c">
+            <SelectDifficulty
+              v-bind:diffOptions="diffOptions"
+              v-on:send-difficulty="setDifficultyString"
+            />
 
-      <transition name="fade-right">
-        <SelectDifficulty
-          v-bind:diffOptions="diffOptions"
-          v-on:send-difficulty="setDifficultyString"
-          v-if="showOptions"
-        />
-      </transition>
-      <transition name="fade-right">
-        <SelectCategory
-          v-bind:categoryOptions="categoryOptions"
-          v-on:send-category="setCategoryString"
-          v-if="showOptions"
-        />
-      </transition>
-      <p class="error-message" v-if="apiCallFailed">
-        {{ errorMessage }}
-      </p>
-      <transition name="fade-right">
-        <StartBtn v-on:start-game="getQuestions" v-if="showOptions" />
-      </transition>
-      <transition name="fade-left">
-        <QuestionDisplay
-          v-if="requestSuccessful"
-          v-bind:questions="questions"
-          v-bind:playerProgress="playerProgress"
-          v-bind:playerScore="playerScore"
-          v-bind:key="rerenderKey"
-        />
-      </transition>
-      <transition name="fade-left">
-        <AnswersDisplay
-          v-if="requestSuccessful"
-          v-bind:answers="answers"
-          v-bind:playerProgress="playerProgress"
-          v-bind:correctAnswers="correctAnswers"
-          v-bind:key="rerenderKey"
-          v-on:update-progress="[updateProgress(), forceRerender()]"
-          v-on:update-score="updateScore"
-          v-on:play-again="[updateProgress(), getQuestions()]"
-        />
-      </transition>
+            <SelectCategory
+              v-bind:categoryOptions="categoryOptions"
+              v-on:send-category="setCategoryString"
+            />
+
+            <p class="error-message" v-if="apiCallFailed">
+              {{ errorMessage }}
+            </p>
+
+            <StartBtn v-on:start-game="getQuestions" />
+          </div>
+
+          <div class="q-a-container flex-col ai-c">
+            <transition name="fade-left">
+            <QuestionDisplay
+              v-bind:questions="questions"
+              v-bind:playerProgress="playerProgress"
+              v-bind:playerScore="playerScore"
+              v-bind:key="rerenderKeyQ"
+              v-on:update-progress="forceRerender"
+              v-if="requestSuccessful"
+            />
+            </transition>
+
+            <transition name="fade-left">
+            <AnswersDisplay
+              v-bind:answers="answers"
+              v-bind:playerProgress="playerProgress"
+              v-bind:correctAnswers="correctAnswers"
+              v-bind:key="rerenderKeyA"
+              v-on:update-progress="[updateProgress(), forceRerender()]"
+              v-on:update-score="updateScore"
+              v-on:play-again="[updateProgress(), getQuestions()]"
+              v-if="requestSuccessful"
+            />
+            </transition>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -124,7 +135,8 @@ export default {
       questions: [],
       answers: [],
       correctAnswers: [],
-      rerenderKey: 0
+      rerenderKeyQ: 0,
+      rerenderKeyA: 1,
     };
   },
   computed: {
@@ -218,8 +230,9 @@ export default {
       this.correctAnswers = [];
     },
     forceRerender() {
-      this.rerenderKey += 1;
-    }
+      this.rerenderKeyQ += 1;
+      this.rerenderKeyA += 1;
+    },
   },
   mounted() {
     this.getSessionToken();
@@ -239,7 +252,7 @@ export default {
   background: $darkGray;
 
   .title {
-    font-size: 3.75rem;
+    font-size: 2.75rem;
     font-weight: 400;
     margin: 1rem 0;
     color: $lightOrange;
@@ -267,6 +280,31 @@ export default {
       }
     }
 
+    .outer-wrapper {
+      width: 100%;
+      overflow-x: hidden;
+
+      .inner-wrapper {
+        width: 200%;
+        transition: transform .75s ease-in;
+        
+        .options-container {
+          width: 50%;
+          order: 2;
+          
+        }
+
+        .q-a-container {
+          width: 50%;
+          order: 1;
+        }
+      }
+    }
+
+    .active {
+          transform: translateX(-50%);
+        }
+
     .error-message {
       font-size: 2rem;
       color: $darkGray;
@@ -276,31 +314,21 @@ export default {
 }
 
 .fade-left-enter-active {
-  transition: all 0.6s ease-in;
+  transition: transform 0.6s ease-in;
 }
 .fade-left-leave-active {
-  transition: all 0.4s ease-out;
+  transition: opacity 0.2s ease-out;  
 }
 
 .fade-left-enter {
-  transform: translateY(300%);
+  transform: translateX(-100%);
   opacity: 1;
 }
 
 .fade-left-leave-to {
+  transform: translateX(100%);
   opacity: 0;
-  
 }
 
-.fade-right-enter-active {
-  transition: transform 0.5s ease-in;
-}
-.fade-right-leave-active {
-  transition: transform 0.5s ease-out;
-}
 
-.fade-right-enter,
-.fade-right-leave-to {
-  transform: translate(300%, 0);
-}
 </style>
