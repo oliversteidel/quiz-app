@@ -19,7 +19,11 @@
         />
       </header>
       <div class="outer-wrapper">
-        <div class="inner-wrapper flex" v-bind:showOptions="showOptions" v-bind:class="{ 'active' : showOptions}">
+        <div
+          class="inner-wrapper flex"
+          v-bind:showOptions="showOptions"
+          v-bind:class="{ active: showOptions }"
+        >
           <div class="options-container flex-col ai-c">
             <SelectDifficulty
               v-bind:diffOptions="diffOptions"
@@ -40,27 +44,27 @@
 
           <div class="q-a-container flex-col ai-c">
             <transition name="fade-left">
-            <QuestionDisplay
-              v-bind:questions="questions"
-              v-bind:playerProgress="playerProgress"
-              v-bind:playerScore="playerScore"
-              v-bind:key="rerenderKeyQ"
-              v-on:update-progress="forceRerender"
-              v-if="requestSuccessful"
-            />
+              <QuestionDisplay
+                v-bind:questions="questions"
+                v-bind:playerProgress="playerProgress"
+                v-bind:playerScore="playerScore"
+                v-bind:key="rerenderKeyQ"
+                v-on:update-progress="forceRerender"
+                v-if="requestSuccessful"
+              />
             </transition>
 
             <transition name="fade-left">
-            <AnswersDisplay
-              v-bind:answers="answers"
-              v-bind:playerProgress="playerProgress"
-              v-bind:correctAnswers="correctAnswers"
-              v-bind:key="rerenderKeyA"
-              v-on:update-progress="[updateProgress(), forceRerender()]"
-              v-on:update-score="updateScore"
-              v-on:play-again="[updateProgress(), getQuestions()]"
-              v-if="requestSuccessful"
-            />
+              <AnswersDisplay
+                v-bind:answers="answers"
+                v-bind:playerProgress="playerProgress"
+                v-bind:correctAnswers="correctAnswers"
+                v-bind:key="rerenderKeyA"
+                v-on:update-progress="[updateProgress(), forceRerender()]"
+                v-on:update-score="updateScore"
+                v-on:play-again="[updateProgress(), getQuestions()]"
+                v-if="requestSuccessful"
+              />
             </transition>
           </div>
         </div>
@@ -248,8 +252,11 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 1rem;
   background: $darkGray;
+
+  @include breakpoint-up($small) {
+    padding: 0 1rem;
+  }
 
   .title {
     font-size: 2.75rem;
@@ -286,12 +293,11 @@ export default {
 
       .inner-wrapper {
         width: 200%;
-        transition: transform .75s ease-in;
-        
+        transition: transform 0.75s ease-in;
+
         .options-container {
           width: 50%;
           order: 2;
-          
         }
 
         .q-a-container {
@@ -302,13 +308,18 @@ export default {
     }
 
     .active {
-          transform: translateX(-50%);
-        }
+      transform: translateX(-50%);
+    }
 
     .error-message {
-      font-size: 2rem;
+      font-size: 1.5rem;
       color: $darkGray;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
+
+      @include breakpoint-up($medium) {
+        font-size: 2rem;
+        margin-bottom: 3rem;
+      }
     }
   }
 }
@@ -317,7 +328,7 @@ export default {
   transition: transform 0.6s ease-in;
 }
 .fade-left-leave-active {
-  transition: opacity 0.2s ease-out;  
+  transition: opacity 0.2s ease-out;
 }
 
 .fade-left-enter {
@@ -329,6 +340,4 @@ export default {
   transform: translateX(100%);
   opacity: 0;
 }
-
-
 </style>

@@ -111,18 +111,23 @@ export default {
   outline: none;
   width: 100%;
   max-width: 18.75rem;
-  height: 4.6875rem;
+  height: 3.75rem;
   padding: 0 1em;
   margin-bottom: 2rem;
   background: $darkGray;
   border-radius: 0.625rem;
   font-family: "Londrina Solid", cursive;
-  font-size: 1.5625rem;
+  font-size: 1.25rem;
   font-weight: 300;
   color: $lightOrange;
   box-shadow: $shadow;
   cursor: pointer;
   transition: all 0.3s ease-in;
+
+  @include breakpoint-up($medium) {
+    font-size: 1.5625rem;   
+    height: 4.6875rem;
+  }
 }
 
 .btn--next:hover {

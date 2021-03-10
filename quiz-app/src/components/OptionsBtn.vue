@@ -29,14 +29,19 @@ export default {
 @import "../styles/_globals.scss";
 
 .btn--options {
-  width: 4.6875rem;
-  height: 4.6875rem;
+  width: 3.75rem;
+  height: 3.75rem;
   border-radius: 0.625rem;
   background: $darkGray;
   color: $lightOrange;
   box-shadow: $shadow;
   cursor: pointer;
   transition: all 0.5s ease-out;
+
+  @include breakpoint-up($small) {
+    width: 4.6875rem;
+  height: 4.6875rem;
+  }
 
   @include breakpoint-up($medium) {
     width: 6.25rem;

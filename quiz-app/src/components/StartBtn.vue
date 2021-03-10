@@ -16,7 +16,7 @@ export default {
   border: none;
   width: 100%;
   max-width: 18.75rem;
-  height: 4.6875rem;
+  height: 3.75rem;
   padding: 0 1em;
   background: $darkGray;
   border-radius: 0.625rem;
@@ -26,6 +26,10 @@ export default {
   color: $lightOrange;
   box-shadow: $shadow;    
   cursor: pointer;
+
+  @include breakpoint-up($medium) {
+    height: 4.6875rem;
+  }
 }
 
 

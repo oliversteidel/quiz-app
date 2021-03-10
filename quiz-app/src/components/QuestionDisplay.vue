@@ -50,11 +50,15 @@ export default {
 @import "../styles/_globals.scss";
 
 p {
-  font-size: 1.75rem;
+  font-size: 1.4rem;
   color: $darkGray;
   margin-bottom: 2rem;
   font-weight: 400;
   opacity: 1;
+
+  @include breakpoint-up($small) {
+    font-size: 1.75rem;
+  }
 
   @include breakpoint-up($medium) {
     font-size: 2rem;

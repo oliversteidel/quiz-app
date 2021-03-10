@@ -16,13 +16,18 @@ export default {
 @import "../styles/_globals.scss";
 
 .wrapper--score {
-  width: 4.68758rem;
-  height: 4.6875rem;
+  width: 3.75rem;
+  height: 3.75rem;
   border-radius: 0.625rem;
   background: $darkGray;
   color: $lightOrange;
   box-shadow: $shadow;
   transition: transform 0.5s ease-in;
+
+  @include breakpoint-up($small) {
+    width: 4.68758rem;
+  height: 4.6875rem;
+  }
 
   @include breakpoint-up($medium) {
     width: 6.25rem;
@@ -30,8 +35,12 @@ export default {
   }
 
   p {
-      font-size: 1.5625rem;
+      font-size: 1.25rem;
       font-weight: 300;
+
+      @include breakpoint-up($small) {
+        font-size: 1.5625rem;
+      }
 
       @include breakpoint-up($medium) {
         font-size: 1.875rem;
@@ -39,7 +48,11 @@ export default {
   }
 
   .score-number {
-      font-size: 2.1875rem;
+      font-size: 1.9rem;
+
+      @include breakpoint-up($small) {
+        font-size: 2.1875rem;
+      }
 
       @include breakpoint-up($medium) {
         font-size: 3.125rem;
