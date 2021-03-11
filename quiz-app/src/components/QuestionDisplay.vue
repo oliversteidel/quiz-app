@@ -55,6 +55,7 @@ p {
   margin-bottom: 2rem;
   font-weight: 400;
   opacity: 1;
+  text-align: center;
 
   @include breakpoint-up($small) {
     font-size: 1.75rem;

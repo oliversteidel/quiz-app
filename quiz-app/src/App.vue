@@ -59,6 +59,7 @@
                 v-bind:answers="answers"
                 v-bind:playerProgress="playerProgress"
                 v-bind:correctAnswers="correctAnswers"
+                v-bind:indexOfCorrectAnswer="indexOfCorrectAnswer"
                 v-bind:key="rerenderKeyA"
                 v-on:update-progress="[updateProgress(), forceRerender()]"
                 v-on:update-score="updateScore"
@@ -147,6 +148,15 @@ export default {
     api_url: function () {
       return `https://opentdb.com/api.php?amount=10${this.categoryString}${this.difficultyString}&type=multiple&token=${this.sessionToken}`;
     },
+    indexOfCorrectAnswer: function () {
+      if (this.playerProgress < 10) {
+        return this.answers[this.playerProgress].indexOf(
+          this.correctAnswers[this.playerProgress]
+        );
+      }else{
+        return 0;
+      }
+    },
   },
   methods: {
     setDifficultyString(value) {
@@ -158,7 +168,7 @@ export default {
     toggleOptions() {
       if (this.questions.length !== 0) {
         this.showOptions = !this.showOptions;
-        this.requestSuccessful = !this.requestSuccessful;
+        //this.requestSuccessful = !this.requestSuccessful;
       }
     },
     getSessionToken: async function () {
@@ -337,7 +347,7 @@ export default {
 }
 
 .fade-left-leave-to {
-  transform: translateX(100%);
+  transform: translateY(10%);
   opacity: 0;
 }
 </style>

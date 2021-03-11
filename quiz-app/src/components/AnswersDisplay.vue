@@ -3,7 +3,7 @@
     <ul class="answer-list flex-col ai-c">
       <li
         class="answer flex ai-c jc-c"
-        v-bind:playerProgress="playerProgress"        
+        v-bind:playerProgress="playerProgress"
         v-for="answer in answers[playerProgress]"
         :key="answer"
         @click="evaluateAnswer"
@@ -11,50 +11,70 @@
         {{ answer }}
       </li>
     </ul>
-    <button class="btn--next" @click="$emit('update-progress')">{{nextBtnText}}</button>
-    <button class="btn--next" v-if="playerProgress === 10" @click="$emit('play-again')">play again</button>
+    <button class="btn--next" @click="$emit('update-progress')">
+      {{ nextBtnText }}
+    </button>
+    <button
+      class="btn--next"
+      v-if="playerProgress === 10"
+      @click="$emit('play-again')"
+    >
+      play again
+    </button>
   </div>
 </template>
 
 <script>
 export default {
   name: "AnswersDisplay",
-  props: ["answers", "correctAnswers", "playerProgress", "showOptions"],
+  data() {
+    return {
+      answerGiven: false,
+    };
+  },
+  props: ["answers", "correctAnswers", "playerProgress", "showOptions", "indexOfCorrectAnswer"],
   computed: {
     nextBtnText: function () {
-      if(this.playerProgress < 9) {
-        return "next question"
-      }else{
-        return "finish"
+      if (this.playerProgress < 9) {
+        return "next question";
+      } else {
+        return "finish";
       }
-    }
+    },
   },
-
 
   methods: {
     evaluateAnswer(event) {
-      let playerAnswer = event.target.innerHTML.slice(1, -1);
-      let veryfier = this.correctAnswers[this.playerProgress];
-      if (playerAnswer === veryfier) {
-        event.target.classList.add("correct");
-        this.$emit('update-score');
-      } else {
-        event.target.classList.add("incorrect");
-        setTimeout(() => {
-          this.showCorrectAnswer();
-        }, 500);
+      if (!this.answerGiven) {        
+        const answerList = document.querySelector('.answer-list').childNodes;
+        let selectedIndex;
+        answerList.forEach((el, index) => {
+          if(el.innerHTML === event.target.innerHTML) {            
+            selectedIndex = index;
+          }
+        });       
+        let playerAnswer = selectedIndex;        
+        let veryfier = this.indexOfCorrectAnswer;       
+        if (playerAnswer === veryfier) {
+          event.target.classList.add("correct");
+          this.$emit("update-score");
+          this.answerGiven = true;
+        } else {
+          event.target.classList.add("incorrect");
+          this.answerGiven = true;
+          setTimeout(() => {
+            this.showCorrectAnswer();
+          }, 500);
+        }
       }
-      
     },
     showCorrectAnswer() {
-      const answerElements = document.querySelectorAll(".answer");
-      answerElements.forEach((el) => {
-        if (
-          el.innerHTML.slice(1, -1) === this.correctAnswers[this.playerProgress]
-        ) {
+      const answerList = document.querySelector('.answer-list').childNodes;
+      answerList.forEach((el, index) => {
+        if(index === this.indexOfCorrectAnswer) {
           el.classList.add("correct");
         }
-      });
+      });      
     },
   },
 };
@@ -99,11 +119,11 @@ export default {
 }
 
 .correct {
-  color: $green;  
+  color: $green;
 }
 
 .incorrect {
-  color: $red;  
+  color: $red;
 }
 
 .btn--next {
@@ -125,7 +145,7 @@ export default {
   transition: all 0.3s ease-in;
 
   @include breakpoint-up($medium) {
-    font-size: 1.5625rem;   
+    font-size: 1.5625rem;
     height: 4.6875rem;
   }
 }
