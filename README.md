@@ -1,7 +1,7 @@
 # Quiz-Web-App
 
 ### This Quiz App uses the Open Trivia API.<br> https://opentdb.com/api_config.php
-
+![img](https://github.com/oliversteidel/quiz-app/blob/main/quiz-app/src/assets/img/quiz-1.jpg)
 ---
 <br>
 You can choose between 15 different topics. (e.g. general knowlege, film, musik, computer-science) <br>
